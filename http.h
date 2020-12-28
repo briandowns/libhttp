@@ -1,6 +1,8 @@
 #ifndef __HTTP
 #define __HTTP
 
+#include <ctype.h>
+
 #define HTTP_METHOD_GET     "GET"
 #define HTTP_METHOD_POST    "POST"
 #define HTTP_METHOD_PUT     "PUT"
@@ -78,7 +80,7 @@
 #define HTTP_STATUS_CODE_NOT_EXTENDED                    510 // RFC 2774, 7
 #define HTTP_STATUS_CODE_NETWORK_AUTHENTICATION_REQUIRED 511 // RFC 6585, 6
 
-#define HTTP_STATUS_MESSAGE_CONTINUE                        "Continue
+#define HTTP_STATUS_MESSAGE_CONTINUE                        "Continue"
 #define HTTP_STATUS_MESSAGE_SWITCHING_PROTOCOLS             "Switching Protocols"
 #define HTTP_STATUS_MESSAGE_PROCESS                         "Processing"
 #define HTTP_STATUS_MESSAGE_EARLY_HINTS                     "Early Hints"
@@ -103,7 +105,7 @@
 #define HTTP_STATUS_MESSAGE_BAD_REQUEST                     "Bad Request"
 #define HTTP_STATUS_MESSAGE_UNAUTHORIZED                    "Unauthorized"
 #define HTTP_STATUS_MESSAGE_PAYMENT_REQUIRED                "Payment Required"
-#define HTTP_STATUS_MESSAGE_FORBIDDEN                       "Forbidden
+#define HTTP_STATUS_MESSAGE_FORBIDDEN                       "Forbidden"
 #define HTTP_STATUS_MESSAGE_NOT_FOUND                       "Not Found"
 #define HTTP_STATUS_MESSAGE_METHOD_NOT_ALLOWED              "Method Not Allowed"
 #define HTTP_STATUS_MESSAGE_NOT_ACCEPTABLE                  "Not Acceptable"
@@ -227,5 +229,14 @@
 #define HTTP_RESPONSE_HEADER_X_FRAME_OPTIONS                  "X-Frame-Options"
 
 #define HTTP_MAX_HEADER_BYTES 1 << 20 // 1 MB
+
+/**
+ * get_header_value returns the value for the given 
+ * header by key. The caller is responsible for freeing
+ * the returned value. if the value isn't found, an 
+ * empty string is returned.
+ */
+char*
+get_header_value(const char *header, char *key);
 
 #endif /* __HTTP */
