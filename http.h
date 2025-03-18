@@ -1,7 +1,21 @@
-#ifndef __HTTP
-#define __HTTP
+#ifdef __cplusplus
+extern "C" {
+#endif
 
+#ifndef __HTTP_H
+#define __HTTP_H
+
+#define _POSIX_SOURCE
+#include <arpa/inet.h>
 #include <ctype.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <time.h>
+
+#include <ulfius.h>
+
+#include "logger.h"
 
 #define HTTP_METHOD_GET     "GET"
 #define HTTP_METHOD_POST    "POST"
@@ -231,12 +245,48 @@
 #define HTTP_MAX_HEADER_BYTES 1 << 20 // 1 MB
 
 /**
- * get_header_value returns the value for the given 
- * header by key. The caller is responsible for freeing
- * the returned value. if the value isn't found, an 
+ * time_spent takes the start time of a route handler and calculates how long
+ * it ran for. It then returns that value to be logged. This is intended to be 
+ * used with the log_request function.
+ */
+#define TIME_SPENT(x)                        \
+{                                            \
+    clock_t diff = clock() - x;              \
+    int msec = diff * 1000 / CLOCKS_PER_SEC; \
+    msec % 1000;                             \
+}
+
+/**
+ * log_request
+ */
+void
+log_request(const struct _u_request *request, struct _u_response *response, clock_t start);
+
+/**
+ * callback_default is used to handled calls that don't have a matching route.
+ * Returns an expected 404.
+ */
+int
+callback_default(const struct _u_request *request, struct _u_response *response, void *user_data);
+
+/**
+ * callback_health_check handles all health check requests to the thinq service.
+ */
+int
+callback_health_check(const struct _u_request *request, struct _u_response *response, void *user_data);
+
+int
+callback_auth_token(const struct _u_request *request, struct _u_response *response, void *user_data);
+
+/**
+ * get_header_value returns the value for the given header by key. The caller
+ * is responsible for freeing the returned value. if the value isn't found, an
  * empty string is returned.
  */
 char*
 get_header_value(const char *header, char *key);
 
-#endif /* __HTTP */
+#endif /* __HTTP_H */
+#ifdef __cplusplus
+}
+#endif
